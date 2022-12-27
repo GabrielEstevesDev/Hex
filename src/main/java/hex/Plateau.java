@@ -1,5 +1,6 @@
 package main.java.hex;
 
+import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Plateau {
@@ -11,17 +12,19 @@ public class Plateau {
 	// le second joueur relie la premiere et la derniere colonne
 	private ConcurrentHashMap<XY,Pion> coord;
 	private Pion[][] t;
-	private boolean Fin =false;
-	private boolean EtatFin; //état de la partie
-	private int nbCaseJoue;
+	private boolean Fin;
 	private int joueur = 0; // prochain � jouer
 	private Pion [] p;
-	private ConcurrentHashMap<XY,Pion> tmp=new ConcurrentHashMap<XY, Pion>();
+	private boolean j1;
+	private boolean j2;
+	private Integer gagnant;
 	
-	public Plateau(int taille) {
+	
+	public Plateau(int taille, int mode) {
 		assert taille > 0 && taille <= TAILLE_MAX;
 		t = new Pion [taille][taille];
-		this.nbCaseJoue=0;
+		this.gagnant=null;
+		this.Fin=false;
 		this.coord=new ConcurrentHashMap<XY, Pion>();
 		for (int lig = 0; lig < taille(); ++lig)
 			for (int col = 0; col < taille(); ++col)
@@ -29,6 +32,18 @@ public class Plateau {
 		p = new Pion[2];
 		p[0] = Pion.Croix;
 		p[1]=Pion.Rond;
+		if(mode==1) {
+			this.j1=true;
+			this.j2=true;
+		}
+		else if(mode==2) {
+			this.j1=true;
+			this.j2=true;
+		}
+		else {
+			this.j1=false;
+			this.j2=false;
+		}
 	}
 	
 	private void suivant() {
@@ -51,7 +66,12 @@ public class Plateau {
 		t[col][lig] = pion;
 		this.estFinie();
 		suivant();
-		this.nbCaseJoue++;
+	}
+	
+	public boolean aBseoinCoord() {
+		if (this.joueur==0)return this.j1;
+		else
+			return this.j2;
 	}
 	
 	public void jouerrobot() {
@@ -64,12 +84,7 @@ public class Plateau {
 		t[col][lig] = pion;
 		this.estFinie();
 		suivant();
-		this.nbCaseJoue++;
 		}
-	
-	public boolean etatJeux() {
-		return this.EtatFin;
-	}
 	
 	public boolean FIN() {
 		return this.Fin;
@@ -115,13 +130,16 @@ public class Plateau {
 		int i=Integer.parseInt(s) +'0';
 		return  i - PREMIERE_LIGNE; // ex '2' - '1' == 1
 	}
+	
+	public int getGagnant() {
+		return gagnant;
+	}
 
 
 	
 	public Plateau(int taille, String pos) {
 		assert taille > 0 && taille <= TAILLE_MAX;
 		t = new Pion [taille][taille];
-		this.nbCaseJoue=0;
 		this.coord=new ConcurrentHashMap<XY, Pion>();
 		String[] lignes = decouper(pos);
 		
@@ -185,59 +203,28 @@ public class Plateau {
 	}
 	
 	public void estFinie() {
-		//System.out.println("joueur "+joueur);
 		Pion pion = p[joueur];
 		this.coord.clear();
-		//System.out.println("estFinie");
 			if(pion==Pion.Croix) {
-					//System.out.println("Croix");
 					this.TrouverCroix(pion);
 				}
 				if(pion==Pion.Rond) {
-					//System.out.println("Rond");
 					this.TrouverRond(pion);
 				}
 		this.chercher();
-		if(this.gagner()==true || this.egalite()==true ) 
+		if(this.gagner()==true ) {
 			this.Fin=true;
-		//System.out.println(this.coord.size()+" FIn taille "+this.taille());
-		/*this.coord.forEach((key, value) ->{
-			System.out.println("x = "+key.y+" y = "+key.x +" Pion = "+value);
-		});*/
-		
-		
-		
-		
-			/*this.coord.forEach((key, value) ->{
-				boolean a;
-				System.out.println("x = "+key.x+" y = "+key.y +" Pion = "+value);
-				if(key.x==this.taille()-1 && value==Pion.Croix ) {
-					a=true;
-				}
-			});*/
+			this.gagnant=this.joueur+1;
+			}
 	}
-	
-	private boolean egalite() {
-		//System.out.println("casejoue = "+this.nbCaseJoue+" nbCase = "+((this.taille()*this.taille())));
-		if(this.nbCaseJoue==(this.taille()*this.taille())) {
-			this.EtatFin=false;
-			return true;
-		}
-		return false;
-	}
-
 	public boolean gagner() {
 		for(int x=0;x<this.taille();x++) {
 			XY finCroix =new XY(x,this.taille()-1);
-			//System.out.println("Fin Croix" +this.coord.containsKey(finCroix)+" x "+(this.taille()-1)+ " y "+x);
 			if(this.coord.containsKey(finCroix) && this.coord.get(finCroix)==Pion.Croix) {
-				this.EtatFin=true;
 				return true;
 			}
 			XY finRond =new XY(this.taille()-1,x);
-			//System.out.println("Fin Rond" +this.coord.containsKey(finRond)+" x "+x+ " y "+(this.taille()-1));
 			if(this.coord.containsKey(finRond) && this.coord.get(finRond)==Pion.Rond) {
-				this.EtatFin=true;
 				return true;
 			}
 		}
@@ -250,13 +237,7 @@ public class Plateau {
 				XY h = new XY(j,0);
 				if(!this.coord.containsKey(h)) {
 					this.coord.put(h, p);
-					this.tmp.put(h, p);
 				}
-				/*while(this.chercher(0,j, p)) {
-					this.coord.forEach((key, value) ->{
-						this.chercher(key.x, key.y, p);
-					});
-				}*/
 			}
 		}
 	}
@@ -267,15 +248,18 @@ public class Plateau {
 				XY h = new XY(0,j);
 				if(!this.coord.containsKey(h)) {
 					this.coord.put(h, p);
-					this.tmp.put(h, p);
 					}
 				}
 			}
 	}
 	public void chercher() {
+		ConcurrentHashMap<XY,Pion> tmp=new ConcurrentHashMap<XY, Pion>();
+		this.coord.forEach( (key, value) ->{
+			tmp.put(key, value);
+		});
+			
 			while(!tmp.isEmpty()) {
 				tmp.forEach( (key, value) ->{
-				//System.out.println("Origine : x = "+key.y+" y = "+key.x +" Pion = "+value);
 				for(int x=key.x-1;x<=key.x+1;x++) {
 					if(x>=0 && x<=this.taille()-1) {
 						if(x==key.x-1) {
@@ -283,7 +267,6 @@ public class Plateau {
 								if(y>=0 && y<=this.taille()-1) {
 									XY h = new XY(x,y);
 									if(this.t[x][y]==value && !this.coord.containsKey(h)) {
-										//System.out.println("trouvé 1 x = "+x+" y = "+y);
 										tmp.put(h, value);
 									}
 								}
@@ -295,7 +278,6 @@ public class Plateau {
 								if(y>=0 && y<=this.taille()-1 && y!=key.y) {
 									XY h = new XY(x,y);
 									if(this.t[x][y]==value && !this.coord.containsKey(h)) {
-										//System.out.println("trouvé 2 x = "+x+" y = "+y);
 										tmp.put(h, value);
 									}
 								}
@@ -303,13 +285,10 @@ public class Plateau {
 							
 						}
 						if(x==key.x+1) {
-							//System.out.println("key.y "+key.y);
 							for(int y=key.y-1;y<=key.y;y++) {
 								if(y>=0 && y<=this.taille()-1) {
-									//System.out.println("key.y "+key.y);
 									XY h = new XY(x,y);
 									if(this.t[x][y]==value && !this.coord.containsKey(h)) {
-										//System.out.println("trouvé 3 x = "+x+" y = "+y);
 										tmp.put(h, value);
 									}
 								}
@@ -323,11 +302,6 @@ public class Plateau {
 				tmp.remove(key);
 			});
 			}
-			/*if(this.t[i-1][j]==Pion.Croix && this.t[i-1][j+1]==Pion.Croix &&
-					this.t[i][j+1]==Pion.Croix && this.t[i][j+1]==Pion.Croix && 
-					this.t[i+1][j]==Pion.Croix && this.t[i+1][j-1]==Pion.Croix ) {
-				ConcurrentHashMap
-			}*/
 	}
 	
 	public static class XY {

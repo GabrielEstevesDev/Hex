@@ -39,7 +39,7 @@ public class main {
 		
 		
 	private static void JouerPartie(int mode,int taille) {
-		Plateau p = new Plateau(taille);
+		Plateau p = new Plateau(taille,mode);
 		int joueur=0;
 		String s1 = "" ;
 		int coup=0;
@@ -48,8 +48,8 @@ public class main {
 			if(coup==1 && mode==1) {
 				do {
 					try {
-					System.out.println("Entrez 1 si vous voulez changer de cot�.");
-					System.out.println("Entrez 0 si vous ne voulez pas changer de cot�.");
+					System.out.println("Entrez 1 si vous voulez changer de coté.");
+					System.out.println("Entrez 0 si vous ne voulez pas changer de coté.");
 					Scanner sc1 =new Scanner(System.in);
 					bool = sc1.nextInt();
 					}catch(InputMismatchException e) {
@@ -61,33 +61,27 @@ public class main {
 			}
 			joueur=p.getJoueur();
 			System.out.println("A Joueur " + joueur + " de jouer.");
-					if(mode==1 || mode ==2 && joueur==2) {
-						Scanner sc =new Scanner(System.in);
-						s1= sc.nextLine();
-						if(p.estValide(s1)==false) {
-							System.out.println("Veuillez saisir une case valide");
-						}
-						else if(p.getCase(s1) != Pion.Vide) {
-							System.out.println("Veuillez saisir une case vide");
-						}
-					}
-							
-							if(mode==1 || mode ==2 && joueur==2)p.jouer(s1);
-							if(mode==2 && joueur==1)p.jouerrobot();
-							if(mode==3)p.jouerrobot();
-							System.out.println(p);
-							coup++;
-					
-					//System.out.println(s1);
-					
-				
+			if(p.aBseoinCoord()==true) {
+				Scanner sc =new Scanner(System.in);
+				s1= sc.nextLine();
+				if(p.estValide(s1)==false) {
+					System.out.println("Veuillez saisir une case valide");
+				}
+				else if(p.getCase(s1) != Pion.Vide) {
+					System.out.println("Veuillez saisir une case vide");
+				}
+				else {
+					p.jouer(s1);
+					coup++;
+				}
 			}
-			
-		if(p.etatJeux()==true) {
-			System.out.println("Le joueur "+(joueur)+" a gagné !");
-		}
-		else
-			System.out.println("Égalité !!!");
+			else{
+				p.jouerrobot();
+				coup++;
+				}
+					System.out.println(p);	
+			}
+			System.out.println("Le joueur "+p.getGagnant()+" a gagnÃ© !");
 		
 	}
 		

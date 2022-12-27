@@ -1,9 +1,11 @@
 package test.java.hex;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
+import java.util.InputMismatchException;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +31,7 @@ class PlateauTest {
 	@Test
 	void test() {
 		final int taille = 4;
-		Plateau p = new Plateau(taille);
+		Plateau p = new Plateau(taille,1);
 		assertEquals(taille, p.taille());
 		assertEquals(
 				" A B C D\n" + 
@@ -44,8 +46,13 @@ class PlateauTest {
 		assertEquals(Pion.Croix, p.getCase("B2"));
 		System.out.println(p);
 		
-		p.jouer("C2");
+		assertFalse(p.estValide("**"));
+		assertFalse(p.estValide("A5"));
+		assertFalse(p.estValide("Z2"));
+		assertFalse(p.estValide("Z222"));
 		System.out.println(p);
+		
+		
 	}
 	
 	@Test
@@ -71,7 +78,41 @@ class PlateauTest {
 		t.put(y, Pion.Rond);
 		if(!t.containsKey(z))
 			t.put(z, Pion.Croix);
-		System.out.println(t.size());
+		assertEquals(t.size(),2);
 	}
-
+	@Test
+	public void testeretatPartie() {
+		int taille1 = 4;
+		Plateau p1 = new Plateau(taille1,1);
+		int i=1;
+		while(p1.FIN()==false) {
+			p1.jouer("A"+i);
+			p1.jouer("B"+i);
+			i++;
+		}
+		System.out.println(p1);
+		assertTrue(p1.FIN());
+		
+	}
+	@Test
+	public void Gagnant() {
+		int taille1 = 4;
+		Plateau p1 = new Plateau(taille1,1);
+		int i=1;
+		while(p1.FIN()==false) {
+			p1.jouer("A"+i);
+			p1.jouer("B"+i);
+			i++;
+		}
+		assertEquals(p1.getGagnant(),1);
+		
+	}
+	
+	@Test
+	public void TestMode() {
+		int taille1 = 4;
+		Plateau p1 = new Plateau(taille1,1);
+		assertEquals(p1.aBseoinCoord());
+		
+	}
 }
