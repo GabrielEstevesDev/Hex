@@ -61,7 +61,6 @@ public class Plateau {
 			 col = (int) (0 + (Math.random() * (this.t.length - 0)));
 			lig = (int) (0 + (Math.random() * (this.t.length - 0)));
 		}while(t[col][lig]!=Pion.Vide );
-		System.out.println("col = "+col+" lig = "+lig+" Pion = "+pion);
 		t[col][lig] = pion;
 		this.estFinie();
 		suivant();
@@ -224,7 +223,6 @@ public class Plateau {
 			this.EtatFin=false;
 			return true;
 		}
-		System.out.println("etat = "+this.EtatFin);
 		return false;
 	}
 

@@ -32,7 +32,7 @@ public class main {
 				
 			}
 			
-		}while(mode<0 || mode>3);
+		}while(mode<1 || mode>3);
 		JouerPartie(mode,taille);
 	}	
 		
@@ -61,7 +61,7 @@ public class main {
 			}
 			joueur=p.getJoueur();
 			System.out.println("A Joueur " + joueur + " de jouer.");
-					if(mode==1 || mode ==2 && joueur==0) {
+					if(mode==1 || mode ==2 && joueur==2) {
 						Scanner sc =new Scanner(System.in);
 						s1= sc.nextLine();
 						if(p.estValide(s1)==false) {
@@ -70,15 +70,14 @@ public class main {
 						else if(p.getCase(s1) != Pion.Vide) {
 							System.out.println("Veuillez saisir une case vide");
 						}
-						else {
+					}
 							
-							if(mode==1 || mode ==2 && joueur==0)p.jouer(s1);
+							if(mode==1 || mode ==2 && joueur==2)p.jouer(s1);
 							if(mode==2 && joueur==1)p.jouerrobot();
 							if(mode==3)p.jouerrobot();
 							System.out.println(p);
 							coup++;
-						}
-					}
+					
 					//System.out.println(s1);
 					
 				
