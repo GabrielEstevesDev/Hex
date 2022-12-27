@@ -24,7 +24,7 @@ public class main {
 			try {
 			System.out.println("Veuillez choisir un mode de jeu parmis la liste ci-dessous : ");
 			System.out.println("1 : J1 VS J2");
-			System.out.println("2 : J1 VS IA");
+			System.out.println("2 : IA VS J1");
 			System.out.println("3 : IA VS IA");
 			Scanner sc1 =new Scanner(System.in);
 			mode = sc1.nextInt();
@@ -42,10 +42,9 @@ public class main {
 		Plateau p = new Plateau(taille,mode);
 		int joueur=0;
 		String s1 = "" ;
-		int coup=0;
 		while(p.FIN()==false) {
 			Integer bool = null;
-			if(coup==1 && mode==1) {
+			if(p.getCoups()==1 && (p.getMode()==1 || p.getMode()==2)) {
 				do {
 					try {
 					System.out.println("Entrez 1 si vous voulez changer de coté.");
@@ -57,31 +56,25 @@ public class main {
 					}
 					
 				}while(bool<0 || bool>1);
-				p.inverserPion(bool);
+				if(bool==1)p.inverserPion();
 			}
 			joueur=p.getJoueur();
 			System.out.println("A Joueur " + joueur + " de jouer.");
-			if(p.aBseoinCoord()==true) {
-				Scanner sc =new Scanner(System.in);
-				s1= sc.nextLine();
-				if(p.estValide(s1)==false) {
-					System.out.println("Veuillez saisir une case valide");
-				}
-				else if(p.getCase(s1) != Pion.Vide) {
-					System.out.println("Veuillez saisir une case vide");
-				}
-				else {
+			if(p.jCourantEstJoueur()) {
+				do {
+					Scanner sc =new Scanner(System.in);
+					s1= sc.nextLine();
+					if(p.estValide(s1)==false || p.estVide(s1)==false)
+						System.out.println("Veuillez saisir une case valide");
+				}while(p.estValide(s1)==false || p.estVide(s1)==false);
 					p.jouer(s1);
-					coup++;
 				}
-			}
 			else{
 				p.jouerrobot();
-				coup++;
 				}
 					System.out.println(p);	
 			}
-			System.out.println("Le joueur "+p.getGagnant()+" a gagnÃ© !");
+			System.out.println("Le joueur "+p.getGagnant()+" a gagné !");
 		
 	}
 		

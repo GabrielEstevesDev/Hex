@@ -12,19 +12,22 @@ public class Plateau {
 	// le second joueur relie la premiere et la derniere colonne
 	private ConcurrentHashMap<XY,Pion> coord;
 	private Pion[][] t;
-	private boolean Fin;
+	private boolean estFinie;
 	private int joueur = 0; // prochain � jouer
 	private Pion [] p;
 	private boolean j1;
 	private boolean j2;
 	private Integer gagnant;
-	
+	private int nbCoups;
+	private int mode;
 	
 	public Plateau(int taille, int mode) {
 		assert taille > 0 && taille <= TAILLE_MAX;
 		t = new Pion [taille][taille];
 		this.gagnant=null;
-		this.Fin=false;
+		this.estFinie=false;
+		this.nbCoups=0;
+		this.mode=mode;
 		this.coord=new ConcurrentHashMap<XY, Pion>();
 		for (int lig = 0; lig < taille(); ++lig)
 			for (int col = 0; col < taille(); ++col)
@@ -37,7 +40,7 @@ public class Plateau {
 			this.j2=true;
 		}
 		else if(mode==2) {
-			this.j1=true;
+			this.j1=false;
 			this.j2=true;
 		}
 		else {
@@ -49,12 +52,17 @@ public class Plateau {
 	private void suivant() {
 		joueur = (joueur +1) % NB_JOUEURS;
 	}
-	public void inverserPion(int b) {
-		if(b==1) {
+	public int getMode() {
+		return mode;
+	}
+	public boolean inverserPion() {
+		if(this.getJoueur()==2 && nbCoups==1) { 
 			p[1] = Pion.Croix;
 			p[0]=Pion.Rond;
 			suivant();
+			return true;
 		}
+		return false;
 	}
 	public int getJoueur() {
 		return joueur+1;
@@ -66,16 +74,31 @@ public class Plateau {
 		t[col][lig] = pion;
 		this.estFinie();
 		suivant();
+		nbCoups++;
+	}
+	public Pion getPionJ1() {
+		return p[0];
+	}
+	public Pion getPionJ2() {
+		return p[1];
+	}
+	public boolean getJ1() {
+		return this.j1;
+	}
+	public boolean getJ2() {
+		return this.j2;
 	}
 	
-	public boolean aBseoinCoord() {
-		if (this.joueur==0)return this.j1;
-		else
-			return this.j2;
+	public int getCoups() {
+		return nbCoups;
+	}
+	public boolean jCourantEstJoueur() {
+		if(joueur==0)return j1;
+		return j2;
 	}
 	
 	public void jouerrobot() {
-		Pion pion = Pion.values()[joueur];
+		Pion pion = p[joueur];
 		int col,lig;
 		do {
 			 col = (int) (0 + (Math.random() * (this.t.length - 0)));
@@ -84,10 +107,11 @@ public class Plateau {
 		t[col][lig] = pion;
 		this.estFinie();
 		suivant();
+		nbCoups++;
 		}
 	
 	public boolean FIN() {
-		return this.Fin;
+		return this.estFinie;
 		
 	}
 	public static int getTaille(String pos) {
@@ -109,6 +133,13 @@ public class Plateau {
 		if (col <0 || col >= taille())
 			return false;
 		if (lig <0 || lig >= taille())
+			return false;
+		
+		return true;
+	}
+	
+	public boolean estVide(String coord) {
+		if(this.getCase(coord)!=Pion.Vide)
 			return false;
 		return true;
 	}
@@ -213,7 +244,7 @@ public class Plateau {
 				}
 		this.chercher();
 		if(this.gagner()==true ) {
-			this.Fin=true;
+			this.estFinie=true;
 			this.gagnant=this.joueur+1;
 			}
 	}
