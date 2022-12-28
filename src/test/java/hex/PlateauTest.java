@@ -112,7 +112,30 @@ class PlateauTest {
 	public void TestMode() {
 		int taille1 = 4;
 		Plateau p1 = new Plateau(taille1,1);
-		assertEquals(p1.aBseoinCoord());
-		
+		assertTrue(p1.getJ1());
+		assertTrue(p1.getJ2());
+		assertEquals(p1.getMode(),1);
+		p1=new Plateau(taille1,2);
+		assertFalse(p1.getJ1()); //joueur 1 est un robot
+		assertTrue(p1.getJ2());
+		assertEquals(p1.getMode(),2);
+		p1=new Plateau(taille1,3);
+		assertFalse(p1.getJ1()); //joueur 1 est un robot
+		assertFalse(p1.getJ2());
+		assertEquals(p1.getMode(),3);
+	}
+	
+	@Test
+	public void testInverserPion() {
+		int taille1 = 2;
+		Plateau p1 = new Plateau(taille1,1);
+		assertEquals( p1.getPionJ1(),Pion.Croix);
+		assertEquals( p1.getPionJ2(),Pion.Rond);
+		p1.jouer("A1");
+		assertEquals(p1.getCoups(),1);
+		assertTrue(p1.inverserPion());
+		assertFalse(p1.inverserPion());
+		assertEquals(p1.getPionJ1(),Pion.Rond);
+		assertEquals(p1.getPionJ2(),Pion.Croix);
 	}
 }
