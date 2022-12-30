@@ -8,11 +8,11 @@ public class Plateau {
 	/**le premier joueur relie la premiere et la derniere ligne*/
 	/**le second joueur relie la premiere et la derniere colonne*/
 	private ConcurrentHashMap<XY,Pion> coord;
-	private Pion[][] t;
-	private boolean estFinie, j1, j2;
-	private Pion [] p;
-	private Integer gagnant;
-	private int nbCoups, mode, joueur = 0;
+	private Pion[][] t; //Tableau representant le Plateau
+	private boolean estFinie, j1, j2; //etat de fin de la partie etat du joueur 1 et 2 true = joueur false = robot
+	private Pion [] p; //tableau pour connaître le pion du joueur en cours
+	private Integer gagnant; //Valeur qui indique le gagnant de la partie
+	private int nbCoups, mode, joueur = 0; //Nombre de coups dans la partie mode de jeu de la partie prochain � jouer
 	
 	public Plateau(int taille, int mode) {
 
@@ -31,15 +31,15 @@ public class Plateau {
 		p = new Pion[2];
 		p[0] = Pion.Croix;
 		p[1] = Pion.Rond;
-		if(mode == 1) {
+		if(mode == 1) { //si mode = 1  alors il y a deux joueurs
 			this.j1 = true;
 			this.j2 = true;
 		}
-		else if(mode == 2) {
+		else if(mode == 2) { //si mode = 1  alors il y a un joueur et une IA
 			this.j1 = false;
 			this.j2 = true;
 		}
-		else {
+		else { //sinon il n'y a que des IA
 			this.j1 = false;
 			this.j2 = false;
 		}
@@ -80,13 +80,13 @@ public class Plateau {
 	 * */
 
 	public void jouer(String coord) {
-		Pion pion = p[joueur];
-		int col = getColonne (coord);
+		Pion pion = p[joueur]; //Nous recuperons le pion du joueurs courant
+		int col = getColonne (coord); //nous recuperons les lignes et les collones des coordonnees
 		int lig = getLigne(coord);
 		t[col][lig] = pion;
-		this.estFinie();
-		suivant();
-		nbCoups++;
+		this.estFinie(); //Nous verifions si la partie est finis
+		suivant(); //nous passons au joueur suivant
+		nbCoups++; //nous indiquons qu'un coup a été joué
 	}
 
 	public Pion getPionJ1() {
@@ -278,15 +278,15 @@ public class Plateau {
 			this.gagnant = this.joueur+1;
 			}
 	}
-
+	/*Fonction qui determine si la partie est gagnee*/
 	public boolean gagner() {
-		for(int x = 0; x < this.taille(); x++) {
+		for(int x = 0; x < this.taille(); x++) { //Pour chaque pion nous verifions si les conditions de victoires sont remplis
 			XY finCroix = new XY(x,this.taille() - 1);
-			if(this.coord.containsKey(finCroix) && this.coord.get(finCroix) == Pion.Croix) {
+			if(this.coord.containsKey(finCroix) && this.coord.get(finCroix) == Pion.Croix) { //Pour les croix : s'il y une croix a la dernière ligne dans le chemin trouve
 				return true;
 			}
 			XY finRond = new XY(this.taille() - 1, x);
-			if(this.coord.containsKey(finRond) && this.coord.get(finRond) == Pion.Rond) {
+			if(this.coord.containsKey(finRond) && this.coord.get(finRond) == Pion.Rond) { //Pour les ronds : s'il y un rond a la dernière colonne dans le chemin trouve
 				return true;
 			}
 		}
@@ -297,7 +297,7 @@ public class Plateau {
 		for(int j = 0;j < this.taille(); j++) {
 			if(this.t[j][0] == p) {
 				XY h = new XY(j,0);
-				if(!this.coord.containsKey(h)) {
+				if(!this.coord.containsKey(h)) { //ajoute une position dans le chemin s'il a trouve une croix sur la première ligne
 					this.coord.put(h, p);
 				}
 			}
@@ -308,7 +308,7 @@ public class Plateau {
 		for(int j = 0;j < this.taille(); j++) {
 			if(this.t[0][j] == p) {
 				XY h = new XY(0, j);
-				if(!this.coord.containsKey(h)) {
+				if(!this.coord.containsKey(h)) { //ajoute une position dans le chemin s'il a trouve un rond sur la première colonne
 					this.coord.put(h, p);
 					}
 				}
@@ -320,21 +320,21 @@ public class Plateau {
 	 */
 
 	public void chercher() {
-		ConcurrentHashMap<XY,Pion> tmp = new ConcurrentHashMap<XY, Pion>();
-		this.coord.forEach( (key, value) ->{
-			tmp.put(key, value);
+		ConcurrentHashMap<XY,Pion> tmp = new ConcurrentHashMap<XY, Pion>(); //nous instancions un chemin tmp
+		this.coord.forEach( (key, value) ->{ 
+			tmp.put(key, value);//nous lui ajoutons la position qui permet de commencer le chemin
 		});
 			
-			while(!tmp.isEmpty()) {
-				tmp.forEach( (key, value) ->{
+			while(!tmp.isEmpty()) { //nous lui ajoutons la position qui permet de commencer le chemin
+				tmp.forEach( (key, value) ->{  //alors nous cherchons dans chaque case autour de la position courante
 				for(int x = key.x - 1; x<=key.x + 1; x++) {
 					if(x >= 0 && x <= this.taille() - 1) {
 						if(x == key.x-1) {
 							for(int y = key.y; y <= key.y + 1; y++) {
 								if(y >= 0 && y <= this.taille() - 1) {
 									XY h = new XY(x, y);
-									if(this.t[x][y] == value && !this.coord.containsKey(h)) {
-										tmp.put(h, value);
+									if(this.t[x][y] == value && !this.coord.containsKey(h)) {  //si nous trouvons une autre case du même pion et qu'll n'est pas le chemin
+										tmp.put(h, value); //nous l'ajoutons au chemin tmp
 									}
 								}
 							}
@@ -365,12 +365,12 @@ public class Plateau {
 					}
 						
 				}
-				this.coord.put(key, value);
-				tmp.remove(key);
+				this.coord.put(key, value);  //une fois exploite nous l'ajoutons au chemin principale
+				tmp.remove(key);  //et nous le retirons de tmp
 			});
 			}
 	}
-	
+		/*Classe XY de coordonnees*/
 	public static class XY {
 		@Override
 		public int hashCode() {
