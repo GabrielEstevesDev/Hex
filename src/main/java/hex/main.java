@@ -3,26 +3,14 @@ package main.java.hex;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import sources.hex.Plateau;
+
 public class main {
-
 	public static void main(String[] args) {
-		DeroulementPartie();
-		JouerPartie(mode, taille);
-	}
-
-	/**
-	 Fonction DeroulementPartie() affichant le début du déroulement du jeu de Hex avant de commencer le processus
-	 de la partie selon le mode de jeu entré
-	 1 - Joueur vs Joueur
-	 2 - Joueur vs IA
-	 3 - IA vs IA
-	 */
-
-	private static void DeroulementPartie(){
-
 		System.out.println("Bienvenue dans le jeu de Hex !");
 
-		int taille = mode = 0;
+		int taille = 0;
+		int mode = 0;
 
 		do {
 			try {
@@ -48,7 +36,19 @@ public class main {
 			}
 
 		}while(mode < 1 || mode > 3);
+		JouerPartie(mode, taille);
 	}
+
+	/**
+	 Fonction DeroulementPartie() affichant le début du déroulement du jeu de Hex avant de commencer le processus
+	 de la partie selon le mode de jeu entré
+	 1 - Joueur vs Joueur
+	 2 - Joueur vs IA
+	 3 - IA vs IA
+	 */
+
+
+		
 
 	/**
 	Fonction JouerPartie(int mode, int taille)
@@ -57,7 +57,7 @@ public class main {
 	 param[in] : int mode, int taille
 	*/
 	private static void JouerPartie(int mode, int taille) {
-		Plateau p = new Plateau(taille, mode);
+		IPlateau p = new Plateau(taille, mode);
 		int joueur = 0;
 		String s1 = "" ;
 		while(!p.FIN()) {
