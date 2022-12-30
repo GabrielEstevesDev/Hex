@@ -9,9 +9,10 @@ import java.util.InputMismatchException;
 
 import org.junit.jupiter.api.Test;
 
+import main.java.hex.IPlateau;
 import main.java.hex.Pion;
-import main.java.hex.Plateau;
-import main.java.hex.Plateau.XY;
+import sources.hex.Plateau;
+import sources.hex.Plateau.XY;
 
 class PlateauTest {
 	private String pos1 = ".X..XOXXOO.OX..."; 
@@ -66,7 +67,7 @@ class PlateauTest {
 		for (int i = 0; i< taille; ++i)
 			assertEquals(lignes_rep[i], lignes[i]);
 		
-		Plateau p = new Plateau(taille, pos);
+		IPlateau p = new Plateau(taille, pos);
 		assertEquals(display_rep, p.toString());
 		XY z= new XY(1,2);
 		XY y= new XY(2,1);
@@ -82,7 +83,7 @@ class PlateauTest {
 	@Test
 	public void testeretatPartie() {
 		int taille1 = 4;
-		Plateau p1 = new Plateau(taille1,1);
+		IPlateau p1 = new Plateau(taille1,1);
 		int i=1;
 		while(p1.FIN()==false) {
 			p1.jouer("A"+i);
