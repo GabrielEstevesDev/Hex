@@ -1,8 +1,10 @@
 package main.java.hex;
 
 public enum Pion {
+
 	Croix('X'), Rond('O'), Vide('.');
 	private char symbole;
+
 	private Pion (char symbole) {
 		this.symbole = symbole;
 	}
