@@ -316,7 +316,7 @@ public class Plateau {
 	}
 
 	/*
-	Fonction permettant de chercher
+	Fonction permettant de chercher le chemin gagnant
 	 */
 
 	public void chercher() {
