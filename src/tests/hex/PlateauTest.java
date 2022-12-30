@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import main.java.hex.IPlateau;
 import sources.hex.Plateau;
 
 class PlateauTest {
@@ -11,7 +12,7 @@ class PlateauTest {
 	@Test
 	void test() {
 		final int taille = 4;
-		Plateau p = new Plateau(taille);
+		IPlateau p = new Plateau(taille,1);
 		assertEquals(taille, p.taille());
 		
 		System.out.println(p);
