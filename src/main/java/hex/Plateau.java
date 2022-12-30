@@ -1,15 +1,17 @@
-package main.java.hex;
+package sources.hex;
 
-import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Plateau {
+import main.java.hex.Pion;
+import main.java.hex.IPlateau;
+
+public class Plateau implements IPlateau {
 	private final static int TAILLE_MAX = 26, NB_JOUEURS = 2, PREMIERE_COLONNE = 'A', PREMIERE_LIGNE = '1';
 	/**le premier joueur relie la premiere et la derniere ligne*/
 	/**le second joueur relie la premiere et la derniere colonne*/
 	private ConcurrentHashMap<XY,Pion> coord;
 	private Pion[][] t; //Tableau representant le Plateau
-	private boolean estFinie, j1, j2; //etat de fin de la partie etat du joueur 1 et 2 true = joueur false = robot
+	private boolean estFinie, j1, j2;  //etat de fin de la partie etat du joueur 1 et 2 true = joueur false = robot
 	private Pion [] p; //tableau pour connaître le pion du joueur en cours
 	private Integer gagnant; //Valeur qui indique le gagnant de la partie
 	private int nbCoups, mode, joueur = 0; //Nombre de coups dans la partie mode de jeu de la partie prochain � jouer
@@ -31,11 +33,11 @@ public class Plateau {
 		p = new Pion[2];
 		p[0] = Pion.Croix;
 		p[1] = Pion.Rond;
-		if(mode == 1) { //si mode = 1  alors il y a deux joueurs
+		if(mode == 1) { //si mode = 1  alors il y a un joueur et une IA
 			this.j1 = true;
 			this.j2 = true;
 		}
-		else if(mode == 2) { //si mode = 1  alors il y a un joueur et une IA
+		else if(mode == 2) { //si mode = 2  alors il y a un joueur et une IA
 			this.j1 = false;
 			this.j2 = true;
 		}
@@ -48,17 +50,18 @@ public class Plateau {
 	private void suivant() {
 		joueur = (joueur +1) % NB_JOUEURS;
 	}
-
+	@Override
 	public int getMode() {
 		return mode;
 	}
 
 	/**
-	 * Fonction inverserPion() permettant d'inverser les pions des joueurs entre eux
-	 * Selon la règle du jeu de Hex, le 2ème joueur a le droit de pouvoir échanger ses pions
+	 * Fonction inverserPion() permettant d'inverser les Pions des joueurs entre eux
+	 * Selon la règle du jeu de Hex, le 2ème joueur a le droit de pouvoir échanger ses Pions
 	 * avec le premier joueur suite au premier coup du tout premier joueur
 	 * return : boolean
 	 * */
+	@Override
 	public boolean inverserPion() {
 		if(this.getJoueur() == 2 && nbCoups == 1) {
 			p[1] = Pion.Croix;
@@ -68,6 +71,7 @@ public class Plateau {
 		}
 		return false;
 	}
+	@Override
 	public int getJoueur() {
 		return joueur + 1;
 	}
@@ -79,12 +83,13 @@ public class Plateau {
 	 * param[in] : String coord
 	 * */
 
+	@Override
 	public void jouer(String coord) {
-		Pion pion = p[joueur]; //Nous recuperons le pion du joueurs courant
+		Pion Pion = p[joueur]; //Nous recuperons le pion du joueurs courant
 		int col = getColonne (coord); //nous recuperons les lignes et les collones des coordonnees
 		int lig = getLigne(coord);
-		t[col][lig] = pion;
-		this.estFinie(); //Nous verifions si la partie est finis
+		t[col][lig] = Pion;
+		this.estFinie();//Nous verifions si la partie est finis
 		suivant(); //nous passons au joueur suivant
 		nbCoups++; //nous indiquons qu'un coup a été joué
 	}
@@ -101,10 +106,12 @@ public class Plateau {
 	public boolean getJ2() {
 		return this.j2;
 	}
+	@Override
 	public int getCoups() {
 		return nbCoups;
 	}
 
+	@Override
 	public boolean jCourantEstJoueur() {
 		if(joueur == 0)return j1;
 		return j2;
@@ -114,19 +121,21 @@ public class Plateau {
 	Fonction jouerrobot() permettant de faire jouer l'IA en choisissant des valeurs aléatoires
 	 selon le déroulement de la partie et les possibilités
 	*/
+	@Override
 	public void jouerrobot() {
-		Pion pion = p[joueur];
+		Pion Pion = p[joueur];
 		int col,lig;
 		do {
 			col = (int) (0 + (Math.random() * (this.t.length - 0)));
 			lig = (int) (0 + (Math.random() * (this.t.length - 0)));
 		}while(t[col][lig] != Pion.Vide );
-		t[col][lig] = pion;
+		t[col][lig] = Pion;
 		this.estFinie();
 		suivant();
 		nbCoups++;
 	}
 	
+	@Override
 	public boolean FIN() {
 		return this.estFinie;
 		
@@ -143,6 +152,7 @@ public class Plateau {
 	 * Et si le deuxième caractère est bien une lettre.
 	 * return : boolean
 	 * */
+	@Override
 	public boolean estValide(String coord) {
 		if (coord.length() != 2 && coord.length() != 3)
 			return false;
@@ -166,7 +176,7 @@ public class Plateau {
 	in : String coord
 	return : boolean
 	*/
-	
+	@Override
 	public boolean estVide(String coord) {
 		if(this.getCase(coord) != Pion.Vide)
 			return false;
@@ -193,7 +203,7 @@ public class Plateau {
 	/*
 	Fonction retournant le gagnant de la partie
 	*/
-	public int getGagnant() {
+	public Integer getGagnant() {
 		return gagnant;
 	}
 
@@ -214,11 +224,11 @@ public class Plateau {
 					"position non valide");
 	}
 
-	public int getNb(Pion pion) {
+	public int getNb(Pion Pion) {
 		int nb = 0;
 		for (Pion [] ligne : t)
 			for (Pion p : ligne)
-				if (p == pion)
+				if (p == Pion)
 					++nb;
 		return nb;
 	}
@@ -264,13 +274,13 @@ public class Plateau {
 	 * */
 	
 	public void estFinie() {
-		Pion pion = p[joueur];
+		Pion Pion = p[joueur];
 		this.coord.clear();
-			if(pion == Pion.Croix) {
-					this.TrouverCroix(pion);
+			if(Pion == Pion.Croix) {
+					this.TrouverCroix(Pion);
 				}
-				if(pion == Pion.Rond) {
-					this.TrouverRond(pion);
+				if(Pion == Pion.Rond) {
+					this.TrouverRond(Pion);
 				}
 		this.chercher();
 		if(this.gagner() == true ) {
@@ -278,8 +288,9 @@ public class Plateau {
 			this.gagnant = this.joueur+1;
 			}
 	}
-	/*Fonction qui determine si la partie est gagnee*/
-	public boolean gagner() {
+
+	@Override
+	public boolean gagner() { 
 		for(int x = 0; x < this.taille(); x++) { //Pour chaque pion nous verifions si les conditions de victoires sont remplis
 			XY finCroix = new XY(x,this.taille() - 1);
 			if(this.coord.containsKey(finCroix) && this.coord.get(finCroix) == Pion.Croix) { //Pour les croix : s'il y une croix a la dernière ligne dans le chemin trouve
@@ -320,20 +331,20 @@ public class Plateau {
 	 */
 
 	public void chercher() {
-		ConcurrentHashMap<XY,Pion> tmp = new ConcurrentHashMap<XY, Pion>(); //nous instancions un chemin tmp
-		this.coord.forEach( (key, value) ->{ 
-			tmp.put(key, value);//nous lui ajoutons la position qui permet de commencer le chemin
+		ConcurrentHashMap<XY,Pion> tmp = new ConcurrentHashMap<XY, Pion>();
+		this.coord.forEach( (key, value) ->{ //nous instancions un chemin tmp
+			tmp.put(key, value); //nous lui ajoutons la position qui permet de commencer le chemin
 		});
 			
 			while(!tmp.isEmpty()) { //nous lui ajoutons la position qui permet de commencer le chemin
-				tmp.forEach( (key, value) ->{  //alors nous cherchons dans chaque case autour de la position courante
+				tmp.forEach( (key, value) ->{ //alors nous cherchons dans chaque case autour de la position courante
 				for(int x = key.x - 1; x<=key.x + 1; x++) {
 					if(x >= 0 && x <= this.taille() - 1) {
 						if(x == key.x-1) {
 							for(int y = key.y; y <= key.y + 1; y++) {
 								if(y >= 0 && y <= this.taille() - 1) {
 									XY h = new XY(x, y);
-									if(this.t[x][y] == value && !this.coord.containsKey(h)) {  //si nous trouvons une autre case du même pion et qu'll n'est pas le chemin
+									if(this.t[x][y] == value && !this.coord.containsKey(h)) { //si nous trouvons une autre case du même pion et qu'll n'est pas le chemin
 										tmp.put(h, value); //nous l'ajoutons au chemin tmp
 									}
 								}
@@ -365,12 +376,12 @@ public class Plateau {
 					}
 						
 				}
-				this.coord.put(key, value);  //une fois exploite nous l'ajoutons au chemin principale
-				tmp.remove(key);  //et nous le retirons de tmp
+				this.coord.put(key, value); //une fois exploite nous l'ajoutons au chemin principale
+				tmp.remove(key); //et nous le retirons de tmp
 			});
 			}
 	}
-		/*Classe XY de coordonnees*/
+	/*Classe XY de coordonnees*/
 	public static class XY {
 		@Override
 		public int hashCode() {
