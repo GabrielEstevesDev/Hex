@@ -1,5 +1,6 @@
 package main.java.hex;
 
+
 public interface IPlateau {
 
 	/**
@@ -37,7 +38,6 @@ public interface IPlateau {
 	 * */
 	boolean estValide(String coord);
 
-	boolean gagner();
 
 	int getCoups();
 
@@ -49,6 +49,6 @@ public interface IPlateau {
 
 	Integer getGagnant();
 
-	int taille();
+
 
 }
