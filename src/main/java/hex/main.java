@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import sources.hex.Plateau;
 
+
 public class main {
 	public static void main(String[] args) {
 		System.out.println("Bienvenue dans le jeu de Hex !");
@@ -37,18 +38,7 @@ public class main {
 
 		}while(mode < 1 || mode > 3);
 		JouerPartie(mode, taille);
-	}
-
-	/**
-	 Fonction DeroulementPartie() affichant le début du déroulement du jeu de Hex avant de commencer le processus
-	 de la partie selon le mode de jeu entré
-	 1 - Joueur vs Joueur
-	 2 - Joueur vs IA
-	 3 - IA vs IA
-	 */
-
-
-		
+	}		
 
 	/**
 	Fonction JouerPartie(int mode, int taille)
@@ -62,8 +52,8 @@ public class main {
 		String s1 = "" ;
 		while(!p.FIN()) {
 			Integer bool = null;
-			if(p.getCoups() == 1 && (p.getMode() == 1 || p.getMode() == 2)) {
-				do {
+			if(p.getCoups() == 1 && (p.getMode() == 1 || p.getMode() == 2)) { //Si nous sommes au deuxième coup et que nous sommes dans le mode 1 ou 2
+				do { //alors le joueur peut demander à changer de pion
 					try {
 					System.out.println("Entrez 1 si vous voulez changer de coté.");
 					System.out.println("Entrez 0 si vous ne voulez pas changer de coté.");
@@ -81,8 +71,8 @@ public class main {
 			joueur = p.getJoueur();
 			System.out.println("A Joueur " + joueur + " de jouer.");
 
-			if(p.jCourantEstJoueur()) {
-				do {
+			if(p.jCourantEstJoueur()) { //Si le joueur courant est un joueur
+				do { //il doit alors choisir une case où jouer
 					Scanner sc = new Scanner(System.in);
 					s1 = sc.nextLine();
 					if(!p.estValide(s1) || !p.estVide(s1))
@@ -90,7 +80,7 @@ public class main {
 				}while(!p.estValide(s1) || !p.estVide(s1));
 					p.jouer(s1);
 				}
-			else{
+			else{ //sinon c'est une IA donc elle doit jouer un coup
 				p.jouerrobot();
 				}
 					System.out.println(p);	
