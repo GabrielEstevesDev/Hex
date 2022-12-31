@@ -10,7 +10,7 @@ import java.util.InputMismatchException;
 import org.junit.jupiter.api.Test;
 
 import main.java.hex.IPlateau;
-import main.java.hex.Pion;
+import sources.hex.Pion;
 import sources.hex.Plateau;
 import sources.hex.Plateau.XY;
 
