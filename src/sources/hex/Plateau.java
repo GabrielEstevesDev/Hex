@@ -2,7 +2,6 @@ package sources.hex;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import main.java.hex.Pion;
 import main.java.hex.IPlateau;
 
 public class Plateau implements IPlateau {
@@ -289,7 +288,6 @@ public class Plateau implements IPlateau {
 			}
 	}
 
-	@Override
 	public boolean gagner() { 
 		for(int x = 0; x < this.taille(); x++) { //Pour chaque pion nous verifions si les conditions de victoires sont remplis
 			XY finCroix = new XY(x,this.taille() - 1);
