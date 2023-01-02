@@ -1,8 +1,10 @@
-package main.java.hex;
+package sources.hex;
 
 public enum Pion {
+
 	Croix('X'), Rond('O'), Vide('.');
 	private char symbole;
+
 	private Pion (char symbole) {
 		this.symbole = symbole;
 	}
@@ -10,7 +12,7 @@ public enum Pion {
 	public String toString() {
 		return ""+symbole;
 	}
-	public static Pion get(char c) {
+	public static  Pion get(char c) {
 		for (Pion p : Pion.values())
 			if (p.symbole == c)
 				return p;

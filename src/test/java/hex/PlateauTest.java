@@ -9,9 +9,10 @@ import java.util.InputMismatchException;
 
 import org.junit.jupiter.api.Test;
 
-import main.java.hex.Pion;
-import main.java.hex.Plateau;
-import main.java.hex.Plateau.XY;
+import sources.hex.Pion;
+import sources.hex.Plateau;
+import sources.hex.Plateau.XY;
+
 
 class PlateauTest {
 	private String pos1 = ".X..XOXXOO.OX..."; 
@@ -51,8 +52,6 @@ class PlateauTest {
 		assertFalse(p.estValide("Z2"));
 		assertFalse(p.estValide("Z222"));
 		System.out.println(p);
-		
-		
 	}
 	
 	@Test
@@ -80,6 +79,7 @@ class PlateauTest {
 			t.put(z, Pion.Croix);
 		assertEquals(t.size(),2);
 	}
+
 	@Test
 	public void testeretatPartie() {
 		int taille1 = 4;
@@ -92,50 +92,49 @@ class PlateauTest {
 		}
 		System.out.println(p1);
 		assertTrue(p1.FIN());
-		
 	}
+
 	@Test
 	public void Gagnant() {
 		int taille1 = 4;
 		Plateau p1 = new Plateau(taille1,1);
-		int i=1;
-		while(p1.FIN()==false) {
-			p1.jouer("A"+i);
-			p1.jouer("B"+i);
+		int i = 1;
+		while(p1.FIN() == false) {
+			p1.jouer("A" + i);
+			p1.jouer("B" + i);
 			i++;
 		}
-		assertEquals(p1.getGagnant(),1);
-		
+		assertEquals(p1.getGagnant(), 1);
 	}
 	
 	@Test
 	public void TestMode() {
 		int taille1 = 4;
-		Plateau p1 = new Plateau(taille1,1);
+		Plateau p1 = new Plateau(taille1, 1);
 		assertTrue(p1.getJ1());
 		assertTrue(p1.getJ2());
-		assertEquals(p1.getMode(),1);
-		p1=new Plateau(taille1,2);
+		assertEquals(p1.getMode(), 1);
+		p1=new Plateau(taille1, 2);
 		assertFalse(p1.getJ1()); //joueur 1 est un robot
 		assertTrue(p1.getJ2());
-		assertEquals(p1.getMode(),2);
-		p1=new Plateau(taille1,3);
+		assertEquals(p1.getMode(), 2);
+		p1=new Plateau(taille1, 3);
 		assertFalse(p1.getJ1()); //joueur 1 est un robot
 		assertFalse(p1.getJ2());
-		assertEquals(p1.getMode(),3);
+		assertEquals(p1.getMode(), 3);
 	}
 	
 	@Test
 	public void testInverserPion() {
 		int taille1 = 2;
-		Plateau p1 = new Plateau(taille1,1);
-		assertEquals( p1.getPionJ1(),Pion.Croix);
-		assertEquals( p1.getPionJ2(),Pion.Rond);
+		Plateau p1 = new Plateau(taille1, 1);
+		assertEquals(p1.getPionJ1(), Pion.Croix);
+		assertEquals(p1.getPionJ2(), Pion.Rond);
 		p1.jouer("A1");
-		assertEquals(p1.getCoups(),1);
+		assertEquals(p1.getCoups(), 1);
 		assertTrue(p1.inverserPion());
 		assertFalse(p1.inverserPion());
-		assertEquals(p1.getPionJ1(),Pion.Rond);
-		assertEquals(p1.getPionJ2(),Pion.Croix);
+		assertEquals(p1.getPionJ1(), Pion.Rond);
+		assertEquals(p1.getPionJ2(), Pion.Croix);
 	}
 }
