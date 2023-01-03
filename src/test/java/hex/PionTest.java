@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import main.java.hex.Pion;
+import sources.hex.Pion;
 
 class PionTest {
 
